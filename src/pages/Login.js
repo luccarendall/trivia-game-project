@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-// import { getToken } from '../fetch/getToken';
+import PropTypes from 'prop-types';
+import getToken from '../fetch/getToken';
 
 class Login extends Component {
   constructor() {
@@ -33,32 +34,56 @@ class Login extends Component {
     });
   };
 
-  render() {
-    const { button } = this.state;
-    return (
-      <fieldset>
-        <label htmlFor="userName">
-          Username
-          <input
-            type="text"
-            name="userName"
-            data-testid="input-player-name"
-            onChange={ this.onInputChange }
-          />
-        </label>
+ onClick = async () => {
+   const returnToken = await getToken();
+   localStorage.setItem('token', `${returnToken}`);
+   const { history } = this.props;
+   history.push('/game');
+ }
 
-        <label htmlFor="email">
-          Email
-          <input
-            name="email"
-            type="email"
-            data-testid="input-gravatar-email"
-            onChange={ this.onInputChange }
-          />
-        </label>
-        <button type="button" data-testid="btn-play" disabled={ button }>Play</button>
-      </fieldset>);
-  }
+ render() {
+   const { button } = this.state;
+   return (
+     <fieldset>
+       <label htmlFor="userName">
+         Username
+         <input
+           type="text"
+           name="userName"
+           data-testid="input-player-name"
+           onChange={ this.onInputChange }
+         />
+       </label>
+
+       <label htmlFor="email">
+         Email
+         <input
+           name="email"
+           type="email"
+           data-testid="input-gravatar-email"
+           onChange={ this.onInputChange }
+         />
+       </label>
+       <button
+         type="button"
+         data-testid="btn-play"
+         disabled={ button }
+         onClick={ this.onClick }
+       >
+         Play
+       </button>
+     </fieldset>);
+ }
 }
 
 export default Login;
+
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }),
+};
+
+Login.defaultProps = {
+  history: PropTypes.push,
+};
