@@ -41,6 +41,11 @@ class Login extends Component {
    history.push('/game');
  }
 
+ goToSettings = () => {
+   const { history } = this.props;
+   history.push('/settings');
+ }
+
  render() {
    const { button } = this.state;
    return (
@@ -71,6 +76,13 @@ class Login extends Component {
          onClick={ this.onClick }
        >
          Play
+       </button>
+       <button
+         type="button"
+         data-testid="btn-settings"
+         onClick={ this.goToSettings }
+       >
+         Settings
        </button>
      </fieldset>);
  }
