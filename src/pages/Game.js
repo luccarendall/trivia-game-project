@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class Game extends Component {
   render() {
-    return (<section>Game</section>);
+    return (<section><h1>Game</h1></section>);
   }
 }
 
