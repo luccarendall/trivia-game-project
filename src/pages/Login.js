@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import md5 from 'crypto-js/md5';
 import PropTypes from 'prop-types';
 import getToken from '../fetch/getToken';
 
@@ -35,6 +36,15 @@ class Login extends Component {
   };
 
  onClick = async () => {
+   const { userName, email } = this.state;
+   const hash = md5(email).toString();
+   const rankingLocalStorage = {
+     name: userName,
+     score: 0,
+     picture: `https://www.gravatar.com/avatar/${hash}`,
+   };
+   localStorage.setItem('ranking', JSON.stringify(rankingLocalStorage));
+
    const returnToken = await getToken();
    localStorage.setItem('token', `${returnToken}`);
    const { history } = this.props;
