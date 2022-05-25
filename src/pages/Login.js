@@ -20,7 +20,7 @@ class Login extends Component {
       [name]: value,
     }, () => {
       const { email, userName } = this.state;
-      const mailformat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+      const mailformat = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
       const floor = 2;
       if (email.match(mailformat)
       && userName.length >= floor) {
@@ -43,7 +43,13 @@ class Login extends Component {
      score: 0,
      picture: `https://www.gravatar.com/avatar/${hash}`,
    };
-   localStorage.setItem('ranking', JSON.stringify(rankingLocalStorage));
+   const rankingData = JSON.parse(localStorage.getItem('ranking'));
+   if (rankingData !== null) {
+     localStorage
+       .setItem('ranking', JSON.stringify([...rankingData, rankingLocalStorage]));
+   } else {
+     localStorage.setItem('ranking', JSON.stringify([rankingLocalStorage]));
+   }
 
    const returnToken = await getToken();
    localStorage.setItem('token', `${returnToken}`);
