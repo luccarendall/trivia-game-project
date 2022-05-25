@@ -24,7 +24,6 @@ class Game extends Component {
     // faz o fetch de 5 perguntas
     const returnedQuestions = await getQuestions(localStorageToken);
     // verifica se o token é valido e desloga se nâo for.
-    // const tree = 3;
     if (returnedQuestions.results.length < 1) {
       localStorage.removeItem('token');
       const { history } = this.props;
