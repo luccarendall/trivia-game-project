@@ -9,7 +9,6 @@ class Ranking extends Component {
 
   render() {
     const rankingData = JSON.parse(localStorage.getItem('ranking'));
-    console.log(rankingData);
     return (
       <section>
         <h1>Ranking</h1>
