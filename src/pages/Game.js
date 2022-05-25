@@ -23,7 +23,6 @@ class Game extends Component {
     const localStorageToken = localStorage.getItem('token');
     // faz o fetch de 5 perguntas
     const returnedQuestions = await getQuestions(localStorageToken);
-    console.log(returnedQuestions.results);
     // verifica se o token é valido e desloga se nâo for.
     // const tree = 3;
     if (returnedQuestions.results.length < 1) {
@@ -63,7 +62,8 @@ class Game extends Component {
   }
 
   render() {
-    const { name, score, picture } = JSON.parse(localStorage.getItem('ranking'));
+    const playerData = JSON.parse(localStorage.getItem('ranking'));
+    const { name, score, picture } = playerData[playerData.length - 1];
     const { questionsArray, counter, isLoading, zerocinco, answers } = this.state;
 
     return (
