@@ -10,9 +10,9 @@ class Game extends Component {
       counter: 0,
       questionsArray: [],
       isLoading: true,
-      zerocinco: 0.5,
       classIncorrect: '',
       classCorrect: '',
+      lockbutton: false,
     };
   }
 
@@ -22,8 +22,6 @@ class Game extends Component {
 
   answerChecker = ({ target }) => {
     const { questionsArray, counter } = this.state;
-    console.log(questionsArray[counter].correct_answer);
-    console.log(target.value);
     if (target.value === questionsArray[counter].correct_answer) {
       console.log('acertou');
     } else {
@@ -32,7 +30,9 @@ class Game extends Component {
     this.setState({
       classIncorrect: 'red-border',
       classCorrect: 'green-border',
+      lockbutton: true,
     });
+    target.id = 'selected';
   }
 
   getQuestionsOnLoad = async () => {
@@ -54,7 +54,11 @@ class Game extends Component {
   }
 
   createAnswersButton = () => {
-    const { questionsArray, counter, classCorrect, classIncorrect } = this.state;
+    const { questionsArray,
+      counter,
+      classCorrect,
+      classIncorrect,
+      lockbutton } = this.state;
     const answers = [];
     /* pega respostas erradas e coloca num array answers */
     questionsArray[counter].incorrect_answers.forEach((wrongAnswer) => {
@@ -75,19 +79,22 @@ class Game extends Component {
             ? classCorrect : classIncorrect }
           data-testid={ answer === questionsArray[counter].correct_answer
             ? 'correct-answer' : `wrong-answer-${index}` }
+          disabled={ lockbutton }
           onClick={ this.answerChecker }
           value={ answer }
         >
           { answer }
         </button>,
       )));
-    return buttons;
+    const zerocinco = 0.5;
+    return (buttons.sort(() => Math.random() - zerocinco))
+      .map((answer) => answer);
   };
 
   render() {
     const playerData = JSON.parse(localStorage.getItem('ranking'));
     const { name, score, picture } = playerData[playerData.length - 1];
-    const { questionsArray, counter, isLoading, zerocinco } = this.state;
+    const { questionsArray, counter, isLoading } = this.state;
 
     return (
       <section>
@@ -114,8 +121,7 @@ class Game extends Component {
               { questionsArray[counter].question }
             </p>
             <div data-testid="answer-options">
-              {(this.createAnswersButton().sort(() => Math.random() - zerocinco))
-                .map((answer) => answer)}
+              {this.createAnswersButton() }
             </div>
           </div>
         )}
