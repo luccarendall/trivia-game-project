@@ -21,10 +21,6 @@ body {
   border: 3px solid rgb(6, 240, 15);
 }
 
-#selected {
-  box-shadow: 10px 5px 5px  #282c34;
-}
-
 @media ( prefers-reduced-motion : no-preference ) {
 
   .App-logo {
