@@ -11,11 +11,28 @@ class Game extends Component {
       questionsArray: [],
       isLoading: true,
       zerocinco: 0.5,
+      classIncorrect: '',
+      classCorrect: '',
     };
   }
 
   componentDidMount() {
     this.getQuestionsOnLoad();
+  }
+
+  answerChecker = ({ target }) => {
+    const { questionsArray, counter } = this.state;
+    console.log(questionsArray[counter].correct_answer);
+    console.log(target.value);
+    if (target.value === questionsArray[counter].correct_answer) {
+      console.log('acertou');
+    } else {
+      console.log('erro');
+    }
+    this.setState({
+      classIncorrect: 'red-border',
+      classCorrect: 'green-border',
+    });
   }
 
   getQuestionsOnLoad = async () => {
@@ -24,7 +41,6 @@ class Game extends Component {
     // faz o fetch de 5 perguntas
     const returnedQuestions = await getQuestions(localStorageToken);
     // verifica se o token é valido e desloga se nâo for.
-    // const tree = 3;
     if (returnedQuestions.results.length < 1) {
       localStorage.removeItem('token');
       const { history } = this.props;
@@ -33,8 +49,12 @@ class Game extends Component {
     // aloca array de perguntas no estado:
     this.setState({
       questionsArray: returnedQuestions.results,
+      isLoading: false,
     });
-    const { questionsArray, counter } = this.state;
+  }
+
+  createAnswersButton = () => {
+    const { questionsArray, counter, classCorrect, classIncorrect } = this.state;
     const answers = [];
     /* pega respostas erradas e coloca num array answers */
     questionsArray[counter].incorrect_answers.forEach((wrongAnswer) => {
@@ -49,22 +69,25 @@ class Game extends Component {
         <button
           key={ index }
           type="button"
+          // style={ answer === questionsArray[counter].correct_answer
+          //   ? { styleCorrect } : { styleIncorrect } }
+          className={ answer === questionsArray[counter].correct_answer
+            ? classCorrect : classIncorrect }
           data-testid={ answer === questionsArray[counter].correct_answer
             ? 'correct-answer' : `wrong-answer-${index}` }
+          onClick={ this.answerChecker }
+          value={ answer }
         >
           { answer }
         </button>,
       )));
-    this.setState({
-      answers: buttons,
-      isLoading: false,
-    });
-  }
+    return buttons;
+  };
 
   render() {
     const playerData = JSON.parse(localStorage.getItem('ranking'));
     const { name, score, picture } = playerData[playerData.length - 1];
-    const { questionsArray, counter, isLoading, zerocinco, answers } = this.state;
+    const { questionsArray, counter, isLoading, zerocinco } = this.state;
 
     return (
       <section>
@@ -91,7 +114,7 @@ class Game extends Component {
               { questionsArray[counter].question }
             </p>
             <div data-testid="answer-options">
-              {(answers.sort(() => Math.random() - zerocinco))
+              {(this.createAnswersButton().sort(() => Math.random() - zerocinco))
                 .map((answer) => answer)}
             </div>
           </div>
