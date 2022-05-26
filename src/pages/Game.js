@@ -13,6 +13,7 @@ class Game extends Component {
       classIncorrect: '',
       classCorrect: '',
       lockbutton: false,
+      buttonClick: false,
     };
   }
 
@@ -32,7 +33,37 @@ class Game extends Component {
       classCorrect: 'green-border',
       lockbutton: true,
     });
+    if (counter < questionsArray.length - 1) {
+      this.setState({
+        buttonClick: true,
+      });
+    }
     target.id = 'selected';
+  }
+
+  nextQuestion = () => {
+    const { counter, questionsArray } = this.state;
+    console.log(questionsArray);
+    if (counter < questionsArray.length - 1) {
+      const selected = document.getElementById('selected');
+      selected.id = 'unselected';
+      const newCounter = counter + 1;
+      console.log(newCounter);
+      this.setState({
+        buttonClick: false,
+        counter: newCounter,
+        lockbutton: false,
+        classIncorrect: '',
+        classCorrect: '',
+      });
+    } else {
+      const newCounter = counter;
+      this.setState({
+        counter: newCounter,
+        buttonClick: false,
+        lockbutton: true,
+      });
+    }
   }
 
   getQuestionsOnLoad = async () => {
@@ -79,6 +110,7 @@ class Game extends Component {
             ? classCorrect : classIncorrect }
           data-testid={ answer === questionsArray[counter].correct_answer
             ? 'correct-answer' : `wrong-answer-${index}` }
+          id="unselected"
           disabled={ lockbutton }
           onClick={ this.answerChecker }
           value={ answer }
@@ -94,7 +126,7 @@ class Game extends Component {
   render() {
     const playerData = JSON.parse(localStorage.getItem('ranking'));
     const { name, score, picture } = playerData[playerData.length - 1];
-    const { questionsArray, counter, isLoading } = this.state;
+    const { questionsArray, counter, isLoading, buttonClick } = this.state;
 
     return (
       <section>
@@ -123,6 +155,15 @@ class Game extends Component {
             <div data-testid="answer-options">
               {this.createAnswersButton() }
             </div>
+            { buttonClick
+            && (
+              <button
+                type="button"
+                data-testid="btn-next"
+                onClick={ this.nextQuestion }
+              >
+                next
+              </button>)}
           </div>
         )}
       </section>
