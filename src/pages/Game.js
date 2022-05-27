@@ -13,6 +13,7 @@ class Game extends Component {
       classIncorrect: '',
       classCorrect: '',
       lockbutton: false,
+      buttonClick: false,
     };
   }
 
@@ -21,18 +22,50 @@ class Game extends Component {
   }
 
   answerChecker = ({ target }) => {
+    // const option = target;
+    // option.style.background = '#282c34';
     const { questionsArray, counter } = this.state;
     if (target.value === questionsArray[counter].correct_answer) {
       console.log('acertou');
     } else {
       console.log('erro');
+      // target.className = 'red-border selected';
     }
     this.setState({
       classIncorrect: 'red-border',
       classCorrect: 'green-border',
       lockbutton: true,
     });
-    target.id = 'selected';
+    if (counter < questionsArray.length - 1) {
+      this.setState({
+        buttonClick: true,
+      });
+    }
+  }
+
+  nextQuestion = () => {
+    const { counter, questionsArray } = this.state;
+    console.log(questionsArray);
+    if (counter < questionsArray.length - 1) {
+      // const selected = document.getElementsByClassName('selected');
+      // selected.classList.remove('selected');
+      const newCounter = counter + 1;
+      console.log(newCounter);
+      this.setState({
+        buttonClick: false,
+        counter: newCounter,
+        lockbutton: false,
+        classIncorrect: '',
+        classCorrect: '',
+      });
+    } else {
+      const newCounter = counter;
+      this.setState({
+        counter: newCounter,
+        buttonClick: false,
+        lockbutton: true,
+      });
+    }
   }
 
   getQuestionsOnLoad = async () => {
@@ -40,7 +73,7 @@ class Game extends Component {
     const localStorageToken = localStorage.getItem('token');
     // faz o fetch de 5 perguntas
     const returnedQuestions = await getQuestions(localStorageToken);
-    // verifica se o token é valido e desloga se nâo for.
+    // verifica se o token é valido e desloga se nâo for..
     if (returnedQuestions.results.length < 1) {
       localStorage.removeItem('token');
       const { history } = this.props;
@@ -94,7 +127,7 @@ class Game extends Component {
   render() {
     const playerData = JSON.parse(localStorage.getItem('ranking'));
     const { name, score, picture } = playerData[playerData.length - 1];
-    const { questionsArray, counter, isLoading } = this.state;
+    const { questionsArray, counter, isLoading, buttonClick } = this.state;
 
     return (
       <section>
@@ -123,6 +156,15 @@ class Game extends Component {
             <div data-testid="answer-options">
               {this.createAnswersButton() }
             </div>
+            { buttonClick
+            && (
+              <button
+                type="button"
+                data-testid="btn-next"
+                onClick={ this.nextQuestion }
+              >
+                next
+              </button>)}
           </div>
         )}
       </section>
