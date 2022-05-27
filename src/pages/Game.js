@@ -10,9 +10,10 @@ class Game extends Component {
       counter: 0,
       questionsArray: [],
       isLoading: true,
-      zerocinco: 0.5,
       classIncorrect: '',
       classCorrect: '',
+      lockbutton: false,
+      buttonClick: false,
     };
   }
 
@@ -21,18 +22,50 @@ class Game extends Component {
   }
 
   answerChecker = ({ target }) => {
+    // const option = target;
+    // option.style.background = '#282c34';
     const { questionsArray, counter } = this.state;
-    console.log(questionsArray[counter].correct_answer);
-    console.log(target.value);
     if (target.value === questionsArray[counter].correct_answer) {
       console.log('acertou');
     } else {
       console.log('erro');
+      // target.className = 'red-border selected';
     }
     this.setState({
       classIncorrect: 'red-border',
       classCorrect: 'green-border',
+      lockbutton: true,
     });
+    if (counter < questionsArray.length - 1) {
+      this.setState({
+        buttonClick: true,
+      });
+    }
+  }
+
+  nextQuestion = () => {
+    const { counter, questionsArray } = this.state;
+    console.log(questionsArray);
+    if (counter < questionsArray.length - 1) {
+      // const selected = document.getElementsByClassName('selected');
+      // selected.classList.remove('selected');
+      const newCounter = counter + 1;
+      console.log(newCounter);
+      this.setState({
+        buttonClick: false,
+        counter: newCounter,
+        lockbutton: false,
+        classIncorrect: '',
+        classCorrect: '',
+      });
+    } else {
+      const newCounter = counter;
+      this.setState({
+        counter: newCounter,
+        buttonClick: false,
+        lockbutton: true,
+      });
+    }
   }
 
   getQuestionsOnLoad = async () => {
@@ -40,7 +73,7 @@ class Game extends Component {
     const localStorageToken = localStorage.getItem('token');
     // faz o fetch de 5 perguntas
     const returnedQuestions = await getQuestions(localStorageToken);
-    // verifica se o token é valido e desloga se nâo for.
+    // verifica se o token é valido e desloga se nâo for..
     if (returnedQuestions.results.length < 1) {
       localStorage.removeItem('token');
       const { history } = this.props;
@@ -54,7 +87,11 @@ class Game extends Component {
   }
 
   createAnswersButton = () => {
-    const { questionsArray, counter, classCorrect, classIncorrect } = this.state;
+    const { questionsArray,
+      counter,
+      classCorrect,
+      classIncorrect,
+      lockbutton } = this.state;
     const answers = [];
     /* pega respostas erradas e coloca num array answers */
     questionsArray[counter].incorrect_answers.forEach((wrongAnswer) => {
@@ -75,19 +112,22 @@ class Game extends Component {
             ? classCorrect : classIncorrect }
           data-testid={ answer === questionsArray[counter].correct_answer
             ? 'correct-answer' : `wrong-answer-${index}` }
+          disabled={ lockbutton }
           onClick={ this.answerChecker }
           value={ answer }
         >
           { answer }
         </button>,
       )));
-    return buttons;
+    const zerocinco = 0.5;
+    return (buttons.sort(() => Math.random() - zerocinco))
+      .map((answer) => answer);
   };
 
   render() {
     const playerData = JSON.parse(localStorage.getItem('ranking'));
     const { name, score, picture } = playerData[playerData.length - 1];
-    const { questionsArray, counter, isLoading, zerocinco } = this.state;
+    const { questionsArray, counter, isLoading, buttonClick } = this.state;
 
     return (
       <section>
@@ -114,9 +154,17 @@ class Game extends Component {
               { questionsArray[counter].question }
             </p>
             <div data-testid="answer-options">
-              {(this.createAnswersButton().sort(() => Math.random() - zerocinco))
-                .map((answer) => answer)}
+              {this.createAnswersButton() }
             </div>
+            { buttonClick
+            && (
+              <button
+                type="button"
+                data-testid="btn-next"
+                onClick={ this.nextQuestion }
+              >
+                next
+              </button>)}
           </div>
         )}
       </section>
