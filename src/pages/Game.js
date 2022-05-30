@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import getQuestions from '../fetch/getQuestions';
+import Timer from '../components/timer';
 
 class Game extends Component {
   constructor() {
@@ -14,11 +15,28 @@ class Game extends Component {
       classCorrect: '',
       lockbutton: false,
       buttonClick: false,
+      timer: 0,
+      next: false,
     };
   }
 
   componentDidMount() {
     this.getQuestionsOnLoad();
+  }
+
+  timeOut = () => {
+    this.setState({
+      lockbutton: true,
+    });
+  }
+
+  timer = (timer) => {
+    const { next } = this.state;
+    if (next) {
+      this.setState({
+        timer,
+      });
+    }
   }
 
   answerChecker = ({ target }) => {
@@ -127,7 +145,7 @@ class Game extends Component {
   render() {
     const playerData = JSON.parse(localStorage.getItem('ranking'));
     const { name, score, picture } = playerData[playerData.length - 1];
-    const { questionsArray, counter, isLoading, buttonClick } = this.state;
+    const { questionsArray, counter, isLoading, buttonClick, next, timer } = this.state;
 
     return (
       <section>
@@ -167,6 +185,18 @@ class Game extends Component {
               </button>)}
           </div>
         )}
+
+        <div>
+          { next ? <p>{ timer }</p>
+            : (
+              <Timer
+                timeOut={ this.timeOut }
+                timer={ this.timer }
+                stop={ buttonClick }
+                next={ next }
+              />
+            )}
+        </div>
       </section>
     );
   }
