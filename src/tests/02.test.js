@@ -237,7 +237,7 @@ it('Valida se o timer funciona corretamente' , async () => {
     global.fetch.mockResolvedValue({
         json: jest.fn().mockResolvedValue(questionTest),
     });
-    // const callback = jest.fn();
+    // const callback = jest.fn(x);
     jest.useFakeTimers();
     const { history } = renderWithRouterAndRedux(<Game />);
     const timer30 = screen.getByText(/30/i);
