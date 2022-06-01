@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import getQuestions from '../fetch/getQuestions';
 import Timer from '../components/timer';
 import { addScoreAction } from '../redux/actions';
+import Header from '../components/Header';
 
 class Game extends Component {
   constructor() {
@@ -174,23 +175,11 @@ class Game extends Component {
   };
 
   render() {
-    const playerData = JSON.parse(localStorage.getItem('ranking'));
-    const { name, picture } = playerData[playerData.length - 1];
-    const { score } = this.state;
     const { questionsArray, counter, isLoading, buttonClick, next, timer } = this.state;
 
     return (
       <section>
-        <header>
-          <h1>Game</h1>
-          <img
-            src={ picture }
-            alt="Avatar do jogador"
-            data-testid="header-profile-picture"
-          />
-          <div data-testid="header-player-name">{ name }</div>
-          <div data-testid="header-score">{ score }</div>
-        </header>
+        <Header />
         {/* exibe a categoria da pergunta */}
         { isLoading ? (
           <p>Loading...</p>
