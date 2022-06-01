@@ -33,4 +33,5 @@ const playerReducer = (prevState = INITIAL_STATE, action) => {
     return prevState;
   }
 };
+
 export default playerReducer;
