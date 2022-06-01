@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import md5 from 'crypto-js/md5';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import getToken from '../fetch/getToken';
+import { loginAction } from '../redux/actions';
 
 class Login extends Component {
   constructor() {
@@ -37,6 +39,7 @@ class Login extends Component {
 
  onClick = async () => {
    const { userName, email } = this.state;
+   const { loginDispatch } = this.props;
    const hash = md5(email).toString();
    const rankingLocalStorage = {
      name: userName,
@@ -53,6 +56,7 @@ class Login extends Component {
 
    const returnToken = await getToken();
    localStorage.setItem('token', `${returnToken}`);
+   loginDispatch(userName, email);
    const { history } = this.props;
    history.push('/game');
  }
@@ -106,14 +110,19 @@ class Login extends Component {
  }
 }
 
-export default Login;
+const mapDispatchToProps = (dispatch) => ({
+  loginDispatch: (name, email) => dispatch(loginAction(name, email)),
+});
 
 Login.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }),
+  loginDispatch: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {
   history: PropTypes.push,
 };
+
+export default connect(null, mapDispatchToProps)(Login);

@@ -18,6 +18,7 @@ class Game extends Component {
       buttonClick: false,
       next: false,
       score: 0,
+      assertations: 0,
     };
   }
 
@@ -41,7 +42,7 @@ class Game extends Component {
   }
 
   gameScore = () => {
-    const { score, questionsArray, counter } = this.state;
+    const { questionsArray, counter } = this.state;
     const { scoreDispatch } = this.props;
     const HARD_VALUE = 3;
     const MEDIUM_VALUE = 2;
@@ -60,8 +61,11 @@ class Game extends Component {
 
     this.setState((prevState) => ({
       score: (prevState.score + newScore),
-    }));
-    scoreDispatch(score);
+      assertations: (prevState.assertations + 1),
+    }), () => {
+      const { score, assertations } = this.state;
+      scoreDispatch(score, assertations);
+    });
   }
 
   answerChecker = ({ target }) => {
@@ -228,7 +232,7 @@ class Game extends Component {
   }
 }
 const mapDispatchToProps = (dispatch) => ({
-  scoreDispatch: (xablau) => dispatch(addScoreAction(xablau)),
+  scoreDispatch: (score, assertations) => dispatch(addScoreAction(score, assertations)),
 });
 
 Game.propTypes = {

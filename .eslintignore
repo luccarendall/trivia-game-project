@@ -3,4 +3,3 @@ src/serviceWorker.js
 cypress/*
 src/tests/*
 coverage/*
-src/pages/gameBackup.js
