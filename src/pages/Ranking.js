@@ -11,7 +11,7 @@ class Ranking extends Component {
     const rankingData = JSON.parse(localStorage.getItem('ranking'));
     return (
       <section>
-        <h1>Ranking</h1>
+        <h1 data-testid="ranking-title">Ranking</h1>
         {rankingData.map((player, index) => (
           <div key={ index }>
             <p data-testid={ `player-name-${index}` }>
