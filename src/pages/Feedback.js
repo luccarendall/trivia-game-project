@@ -5,7 +5,7 @@ class Feedback extends Component {
   render() {
     return (
       <>
-        <h1>Aqui está seu Feedback</h1>
+        <h1 data-testid="feedback-text">Aqui está seu Feedback</h1>
         <Link to="/" data-testid="btn-play-again">Play Again</Link>
 
       </>

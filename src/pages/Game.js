@@ -85,7 +85,7 @@ class Game extends Component {
       classCorrect: 'green-border',
       lockbutton: true,
     });
-    if (counter < questionsArray.length - 1) {
+    if (counter < questionsArray.length) {
       this.setState({
         buttonClick: true,
       });
@@ -108,10 +108,10 @@ class Game extends Component {
         classCorrect: '',
       });
     } else {
-      const { score } = this.state;
+      // const { score } = this.state;
       const { history } = this.props;
       // Pega o score salvo no estado e passar para o localStorage
-      localStorage.setItem('score', JSON.stringify(score));
+      // localStorage.setItem('score', JSON.stringify(score));
       history.push('/feedback');
     }
   }
