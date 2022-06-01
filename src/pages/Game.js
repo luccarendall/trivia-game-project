@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import getQuestions from '../fetch/getQuestions';
+import Timer from '../components/timer';
+import { addScoreAction } from '../redux/actions';
 
 class Game extends Component {
   constructor() {
     super();
-
     this.state = {
       counter: 0,
       questionsArray: [],
@@ -14,6 +16,9 @@ class Game extends Component {
       classCorrect: '',
       lockbutton: false,
       buttonClick: false,
+      next: false,
+      score: 0,
+      assertations: 0,
     };
   }
 
@@ -21,12 +26,56 @@ class Game extends Component {
     this.getQuestionsOnLoad();
   }
 
+  timeOut = () => {
+    this.setState({
+      lockbutton: true,
+    });
+  }
+
+  timer = (timer) => {
+    const { next } = this.state;
+    if (next) {
+      this.setState({
+        timer,
+      });
+    }
+  }
+
+  gameScore = () => {
+    const { questionsArray, counter } = this.state;
+    const { scoreDispatch } = this.props;
+    const HARD_VALUE = 3;
+    const MEDIUM_VALUE = 2;
+    const EASY_VALUE = 1;
+    const DEFAULT_VALUE = 10;
+    const trinta = 30;
+    const xablau = trinta - counter;
+
+    let difficultyValue = 0;
+    if (questionsArray[counter].difficulty === 'hard') difficultyValue = HARD_VALUE;
+    if (questionsArray[counter].difficulty === 'medium') difficultyValue = MEDIUM_VALUE;
+    if (questionsArray[counter].difficulty === 'easy') difficultyValue = EASY_VALUE;
+    // pegar a informação do timer que tá como counter no componente timer.
+    const newScore = (DEFAULT_VALUE + (xablau * difficultyValue));
+    console.log(questionsArray[counter].difficulty);
+
+    this.setState((prevState) => ({
+      score: (prevState.score + newScore),
+      assertations: (prevState.assertations + 1),
+    }), () => {
+      const { score, assertations } = this.state;
+      scoreDispatch(score, assertations);
+    });
+  }
+
   answerChecker = ({ target }) => {
     // const option = target;
     // option.style.background = '#282c34';
     const { questionsArray, counter } = this.state;
     if (target.value === questionsArray[counter].correct_answer) {
+      // Esse if só acontece quando o usuário clica na opção correta. Dá pra chamar o gameScore dentro dele
       console.log('acertou');
+      this.gameScore();
     } else {
       console.log('erro');
       // target.className = 'red-border selected';
@@ -36,7 +85,7 @@ class Game extends Component {
       classCorrect: 'green-border',
       lockbutton: true,
     });
-    if (counter < questionsArray.length - 1) {
+    if (counter < questionsArray.length) {
       this.setState({
         buttonClick: true,
       });
@@ -45,7 +94,7 @@ class Game extends Component {
 
   nextQuestion = () => {
     const { counter, questionsArray } = this.state;
-    console.log(questionsArray);
+    // console.log(questionsArray);
     if (counter < questionsArray.length - 1) {
       // const selected = document.getElementsByClassName('selected');
       // selected.classList.remove('selected');
@@ -59,12 +108,11 @@ class Game extends Component {
         classCorrect: '',
       });
     } else {
-      const newCounter = counter;
-      this.setState({
-        counter: newCounter,
-        buttonClick: false,
-        lockbutton: true,
-      });
+      // const { score } = this.state;
+      const { history } = this.props;
+      // Pega o score salvo no estado e passar para o localStorage
+      // localStorage.setItem('score', JSON.stringify(score));
+      history.push('/feedback');
     }
   }
 
@@ -104,6 +152,7 @@ class Game extends Component {
     answers.map((answer, index) => (
       buttons.push(
         <button
+          id="answerButton"
           key={ index }
           type="button"
           // style={ answer === questionsArray[counter].correct_answer
@@ -126,8 +175,9 @@ class Game extends Component {
 
   render() {
     const playerData = JSON.parse(localStorage.getItem('ranking'));
-    const { name, score, picture } = playerData[playerData.length - 1];
-    const { questionsArray, counter, isLoading, buttonClick } = this.state;
+    const { name, picture } = playerData[playerData.length - 1];
+    const { score } = this.state;
+    const { questionsArray, counter, isLoading, buttonClick, next, timer } = this.state;
 
     return (
       <section>
@@ -141,7 +191,6 @@ class Game extends Component {
           <div data-testid="header-player-name">{ name }</div>
           <div data-testid="header-score">{ score }</div>
         </header>
-
         {/* exibe a categoria da pergunta */}
         { isLoading ? (
           <p>Loading...</p>
@@ -167,19 +216,34 @@ class Game extends Component {
               </button>)}
           </div>
         )}
+        <div>
+          { next ? <p>{ timer }</p>
+            : (
+              <Timer
+                timeOut={ this.timeOut }
+                timer={ this.timer }
+                stop={ buttonClick }
+                next={ next }
+              />
+            )}
+        </div>
       </section>
     );
   }
 }
-
-export default Game;
+const mapDispatchToProps = (dispatch) => ({
+  scoreDispatch: (score, assertations) => dispatch(addScoreAction(score, assertations)),
+});
 
 Game.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }),
+  scoreDispatch: PropTypes.func.isRequired,
 };
 
 Game.defaultProps = {
   history: PropTypes.push,
 };
+
+export default connect(null, mapDispatchToProps)(Game);
