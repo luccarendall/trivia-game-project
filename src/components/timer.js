@@ -45,6 +45,11 @@ class Timer extends Component {
     }
   }
 
+  exportCounter = () => {
+    const { counter } = this.state;
+    return counter;
+  }
+
   // Aqui um render para fazer o contador aparecer na tela. Depois a gente coloca um CSS e deixa bonitinho
   render() {
     const { counter } = this.state;
