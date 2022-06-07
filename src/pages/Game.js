@@ -95,10 +95,7 @@ class Game extends Component {
 
   nextQuestion = () => {
     const { counter, questionsArray } = this.state;
-    // console.log(questionsArray);
     if (counter < questionsArray.length - 1) {
-      // const selected = document.getElementsByClassName('selected');
-      // selected.classList.remove('selected');
       const newCounter = counter + 1;
       console.log(newCounter);
       this.setState({
@@ -109,10 +106,15 @@ class Game extends Component {
         classCorrect: '',
       });
     } else {
-      // const { score } = this.state;
       const { history } = this.props;
-      // Pega o score salvo no estado e passar para o localStorage
-      // localStorage.setItem('score', JSON.stringify(score));
+      const { score } = this.state;
+      const rankingData = JSON.parse(localStorage.getItem('ranking'));
+      const newRanking = { name: rankingData[rankingData.length - 1].name,
+        score: rankingData[rankingData.length - 1].score = score,
+        picture: rankingData[rankingData.length - 1].picture };
+      rankingData.pop();
+      rankingData.push(newRanking);
+      localStorage.setItem('ranking', JSON.stringify(rankingData));
       history.push('/feedback');
     }
   }
