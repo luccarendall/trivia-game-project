@@ -23,3 +23,11 @@ Em seguida, instale as dependências com ```npm i```, rode o projeto usando o co
 
 Se você tiver interesse em contribuir para este projeto, fique à vontade para enviar sugestões de novas perguntas ou melhorias na interface do jogo. Todas as contribuições serão avaliadas e, se aprovadas, serão adicionadas ao projeto.
 
+## Autores
+<img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width=15> [Carlos Reis](https://github.com/carlos-a-reis)
+
+<img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width=15> [João Carlos Vieira Filho](https://github.com/jvieyrah)
+
+<img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width=15> [Lucca Rendall](https://github.com/LuccaRendall)
+
+<img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width=15> [Thalys Rodrigues](https://github.com/ThalysRD)
