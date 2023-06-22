@@ -1,5 +1,3 @@
-# :construction: README em construção ! :construction:
-
 # Trivia Game Project
 
 Este é um projeto de jogo de perguntas e respostas (trivia) desenvolvido em JavaScript. O objetivo do jogo é responder corretamente o maior número de perguntas em um determinado tempo.
