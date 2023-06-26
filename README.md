@@ -2,6 +2,8 @@
 
 Este é um projeto de jogo de perguntas e respostas (trivia) desenvolvido em JavaScript. O objetivo do jogo é responder corretamente o maior número de perguntas em um determinado tempo.
 
+### [Acesse a aplicação clicando aqui ](https://trivia-game-project-gray.vercel.app/game)
+
 ## Como jogar
 
 Para jogar, basta clonar o repositório em sua máquina local:
